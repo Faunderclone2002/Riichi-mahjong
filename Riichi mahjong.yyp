@@ -4,6 +4,7 @@
   "name": "Riichi mahjong",
   "resources": [
     {"id":{"name":"Hiscore","path":"rooms/Hiscore/Hiscore.yy",},"order":2,},
+    {"id":{"name":"SprCursor","path":"sprites/SprCursor/SprCursor.yy",},"order":11,},
     {"id":{"name":"MajStartBut","path":"objects/MajStartBut/MajStartBut.yy",},"order":1,},
     {"id":{"name":"MajDiceSpr","path":"sprites/MajDiceSpr/MajDiceSpr.yy",},"order":1,},
     {"id":{"name":"MajPlayerHand","path":"objects/MajPlayerHand/MajPlayerHand.yy",},"order":1,},
@@ -24,6 +25,7 @@
     {"id":{"name":"MajHiscoreBut","path":"objects/MajHiscoreBut/MajHiscoreBut.yy",},"order":3,},
     {"id":{"name":"MajHiscores","path":"objects/MajHiscores/MajHiscores.yy",},"order":11,},
     {"id":{"name":"MajPointStick","path":"objects/MajPointStick/MajPointStick.yy",},"order":3,},
+    {"id":{"name":"MajCursor","path":"objects/MajCursor/MajCursor.yy",},"order":12,},
     {"id":{"name":"MajDiscardSpr","path":"sprites/MajDiscardSpr/MajDiscardSpr.yy",},"order":3,},
     {"id":{"name":"MajExitBut","path":"objects/MajExitBut/MajExitBut.yy",},"order":2,},
     {"id":{"name":"MajSaveBut","path":"objects/MajSaveBut/MajSaveBut.yy",},"order":0,},

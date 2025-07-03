@@ -22,8 +22,9 @@
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_58EF2133","properties":[],"isDnd":false,"objectId":{"name":"MajStartBut","path":"objects/MajStartBut/MajStartBut.yy",},"inheritCode":false,"hasCreationCode":false,"colour":4294967295,"rotation":0.0,"scaleX":1.0,"scaleY":1.0,"imageIndex":0,"imageSpeed":1.0,"inheritedItemId":null,"frozen":false,"ignore":false,"inheritItemSettings":false,"x":64.0,"y":256.0,},
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_5E75D5B5","properties":[],"isDnd":false,"objectId":{"name":"MajExitBut","path":"objects/MajExitBut/MajExitBut.yy",},"inheritCode":false,"hasCreationCode":false,"colour":4294967295,"rotation":0.0,"scaleX":1.0,"scaleY":1.0,"imageIndex":0,"imageSpeed":1.0,"inheritedItemId":null,"frozen":false,"ignore":false,"inheritItemSettings":false,"x":288.0,"y":320.0,},
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_29656FB3","properties":[],"isDnd":false,"objectId":{"name":"MajHiscoreBut","path":"objects/MajHiscoreBut/MajHiscoreBut.yy",},"inheritCode":false,"hasCreationCode":false,"colour":4294967295,"rotation":0.0,"scaleX":1.0,"scaleY":1.0,"imageIndex":0,"imageSpeed":1.0,"inheritedItemId":null,"frozen":false,"ignore":false,"inheritItemSettings":false,"x":64.0,"y":320.0,},
+        {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_8EBBE21","properties":[],"isDnd":false,"objectId":{"name":"MajCursor","path":"objects/MajCursor/MajCursor.yy",},"inheritCode":false,"hasCreationCode":false,"colour":4294967295,"rotation":0.0,"scaleX":0.5,"scaleY":0.5,"imageIndex":0,"imageSpeed":1.0,"inheritedItemId":null,"frozen":false,"ignore":false,"inheritItemSettings":false,"x":192.0,"y":96.0,},
       ],"visible":true,"depth":0,"userdefinedDepth":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritVisibility":true,"inheritSubLayers":true,"gridX":32,"gridY":32,"layers":[],"hierarchyFrozen":false,"effectEnabled":true,"effectType":null,"properties":[],},
-    {"resourceType":"GMREffectLayer","resourceVersion":"1.0","name":"Effect_1","depth":100,"visible":true,"userdefinedDepth":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritVisibility":true,"inheritSubLayers":true,"gridX":32,"gridY":32,"layers":[],"hierarchyFrozen":false,"effectEnabled":true,"effectType":"_effect_windblown_particles","properties":[
+    {"resourceType":"GMREffectLayer","resourceVersion":"1.0","name":"Effect_1","visible":true,"depth":100,"userdefinedDepth":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritVisibility":true,"inheritSubLayers":true,"gridX":32,"gridY":32,"layers":[],"hierarchyFrozen":false,"effectEnabled":true,"effectType":"_effect_windblown_particles","properties":[
         {"type":2,"name":"param_sprite","value":"MajHandSpr2",},
         {"type":0,"name":"param_num_particles","value":"60",},
         {"type":0,"name":"param_particle_spawn_time","value":"100",},
@@ -110,6 +111,7 @@
     {"name":"inst_58EF2133","path":"rooms/Title/Title.yy",},
     {"name":"inst_5E75D5B5","path":"rooms/Title/Title.yy",},
     {"name":"inst_29656FB3","path":"rooms/Title/Title.yy",},
+    {"name":"inst_8EBBE21","path":"rooms/Title/Title.yy",},
   ],
   "inheritCreationOrder": false,
   "sequenceId": null,
