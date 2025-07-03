@@ -1,56 +1,60 @@
-// Opponent hands
+// 🔰 Opponent hands
 Opponent1 = ds_list_create();
 Opponent2 = ds_list_create();
 Opponent3 = ds_list_create();
+
 global.opponent1_riichi_declared = false;
 global.opponent2_riichi_declared = false;
 global.opponent3_riichi_declared = false;
 
-global.game_won = false;
 global.opponent1_won = false;
 global.opponent2_won = false;
 global.opponent3_won = false;
+global.game_won = false;
 
-// Player hand and selection
+// 🙋 Player state
 player_hand = ds_list_create();
 selected_tile = 0;
 player_melds = ds_list_create();
 player_has_drawn_tile = false;
 player_riichi_declared = false;
 
-// Game turn and discard data
-global.can_ron = false;
-global.ron_yaku = [];
+// 🔁 Turn management
 global.current_turn = 0;
 global.last_discarded_tile = undefined;
 global.declared_riichi = false;
 
-global.call_chi = ds_list_create();
-global.call_pon = ds_list_create();
-global.call_kan = ds_list_create();
+// 🀀 Ron + Calls
+global.can_ron = false;
+global.ron_yaku = [];
 
 global.can_chi = false;
 global.can_pon = false;
 global.can_kan = false;
 
+global.call_chi = ds_list_create();
+global.call_pon = ds_list_create();
+global.call_kan = ds_list_create();
+
+// 🂨 Discards and tiles
 global.discard_pile = ds_list_create();
 global.tile_list = ds_list_create();
 global.opponent1_discard = ds_list_create();
 global.opponent2_discard = ds_list_create();
 global.opponent3_discard = ds_list_create();
 
+// 🧠 ds_map keys extractor
 function ds_map_keys(the_map) {
     var keys = [];
     var key = ds_map_find_first(the_map);
-
     while (!is_undefined(key)) {
         array_push(keys, key);
         key = ds_map_find_next(the_map, key);
     }
-
     return keys;
 }
 
+// 🧩 Attempt to form 4 melds
 function can_form_four_melds(count_map) {
     var melds = 0;
 
@@ -60,11 +64,14 @@ function can_form_four_melds(count_map) {
 
         for (var i = 0; i < array_length(keys); i++) {
             var key = keys[i];
-            var suit = string_copy(key, 1, 5);
-            var value = real(string_delete(key, 1, 5));
+            var parts = string_split(key, ":");
+            var suit = parts[0];
+            var value_raw = parts[1];
+            var value = suit != "honors" ? real(value_raw) : value_raw;
+
             var count = ds_map_find_value(count_map, key);
 
-            // Try triplet
+            // 🀄 Triplet
             if (count >= 3) {
                 ds_map_replace(count_map, key, count - 3);
                 if (ds_map_find_value(count_map, key) == 0) ds_map_delete(count_map, key);
@@ -73,16 +80,16 @@ function can_form_four_melds(count_map) {
                 break;
             }
 
-            // Try sequence (numbered suits only)
-            if (suit != "honor" && value <= 7) {
-                var k1 = suit + string(value + 1);
-                var k2 = suit + string(value + 2);
+            // 🂫 Sequence (suited only)
+            if (suit != "honors" && value <= 7) {
+                var k1 = suit + ":" + string(value + 1);
+                var k2 = suit + ":" + string(value + 2);
+
                 if (ds_map_exists(count_map, k1) && ds_map_exists(count_map, k2)) {
                     ds_map_replace(count_map, key, count - 1);
                     ds_map_replace(count_map, k1, ds_map_find_value(count_map, k1) - 1);
                     ds_map_replace(count_map, k2, ds_map_find_value(count_map, k2) - 1);
 
-                    // Clean up zeroed entries
                     if (ds_map_find_value(count_map, key) == 0) ds_map_delete(count_map, key);
                     if (ds_map_find_value(count_map, k1) == 0) ds_map_delete(count_map, k1);
                     if (ds_map_find_value(count_map, k2) == 0) ds_map_delete(count_map, k2);
@@ -100,10 +107,10 @@ function can_form_four_melds(count_map) {
     return (melds == 4);
 }
 
+// 🀄 Check for standard hand (4 melds + 1 pair)
 function is_standard_hand(hand) {
     var tile_counts = ds_map_create();
 
-    // Count each tile
     for (var i = 0; i < ds_list_size(hand); i++) {
         var t = ds_list_find_value(hand, i);
         var key = t.suit + ":" + string(t.value);
@@ -114,23 +121,15 @@ function is_standard_hand(hand) {
         }
     }
 
-    // Collect all keys manually
-    var keys = [];
-    var k = ds_map_find_first(tile_counts);
-    while (!is_undefined(k)) {
-        array_push(keys, k);
-        k = ds_map_find_next(tile_counts, k);
-    }
-
+    var keys = ds_map_keys(tile_counts);
     var result = false;
 
-    // Try all possible pairs
     for (var i = 0; i < array_length(keys); i++) {
-        var test_map = ds_map_create();
-		ds_map_copy(test_map, tile_counts);
         var key = keys[i];
+        if (ds_map_find_value(tile_counts, key) >= 2) {
+            var test_map = ds_map_create();
+            ds_map_copy(test_map, tile_counts);
 
-        if (ds_map_find_value(test_map, key) >= 2) {
             ds_map_replace(test_map, key, ds_map_find_value(test_map, key) - 2);
             if (ds_map_find_value(test_map, key) == 0) ds_map_delete(test_map, key);
 
@@ -139,8 +138,9 @@ function is_standard_hand(hand) {
                 ds_map_destroy(test_map);
                 break;
             }
+
+            ds_map_destroy(test_map);
         }
-        ds_map_destroy(test_map);
     }
 
     ds_map_destroy(tile_counts);
@@ -331,86 +331,83 @@ function check_yaku(hand_list) {
     return yaku_found;
 }
 
-// Define honors and suit order to map data and sprite logic
+// 🀄 Tile type setup
 var honor_tiles = ["east", "south", "west", "north", "white", "green", "red"];
 var suit_order = ["manzu", "souzu", "pinzu", "honors"];
+global.tile_list = ds_list_create();
 
-// Tile initialization loop (136 tiles = 34 types × 4 copies)
+// 🂫 Create full wall — 136 tiles = 34 types × 4 copies
 for (var i = 0; i < 136; i++) {
-    tile_number = ((i div 4) mod 9) + 1; // For numbered suits: 1–9
     var tile_suit;
+    var tile_value;
 
-    // Determine the tile's suit based on index range
-    if (i < 36) tile_suit = "manzu";
-    else if (i < 72) tile_suit = "souzu";
-    else if (i < 108) tile_suit = "pinzu";
-    else tile_suit = "honors";
-
-    var honor_index = -1;
-
-    // For honors, compute the proper index in the honor array
-    if (tile_suit == "honors") {
-        honor_index = ((i - 108) div 4);
-        if (honor_index >= array_length(honor_tiles))
-            honor_index = (i - 108) mod 7; // Fallback in case of overflow
+    if (i < 36) {
+        tile_suit = "manzu";
+        tile_value = ((i div 4) mod 9) + 1;
+    } else if (i < 72) {
+        tile_suit = "souzu";
+        tile_value = ((i div 4 - 9) mod 9) + 1;
+    } else if (i < 108) {
+        tile_suit = "pinzu";
+        tile_value = ((i div 4 - 18) mod 9) + 1;
+    } else {
+        tile_suit = "honors";
+        tile_value = honor_tiles[(i - 108) div 4];
     }
 
-    // Calculate sprite index for rendering based on suit and order
-    var sprite_x = (tile_suit == "honors")
-        ? 108 + (honor_index * 4) + (i mod 4)  // Honors follow a different mapping
-        : (array_find_index(suit_order, tile_suit) * 36) + ((tile_number - 1) * 4) + (i mod 4);
+    // 🖼️ Sprite index calculation
+    if (tile_suit == "honors") {
+        var h_index = array_find_index(honor_tiles, tile_value);
+        sprite_index = 108 + (h_index * 4) + (i mod 4);
+    } else {
+        sprite_index = (array_find_index(suit_order, tile_suit) * 36) + ((tile_value - 1) * 4) + (i mod 4);
+    }
 
-    // Pack tile data into a struct
+    // 🀣 Add tile to wall with safe string key
     var tile_data = {
         suit: tile_suit,
-        value: (tile_suit == "honors") ? honor_tiles[honor_index] : tile_number,
-        sprite_index: sprite_x
+        value: tile_value,
+        sprite_index: sprite_index,
+        key: tile_suit + ":" + string(tile_value) // ✅ Honor-safe key format
     };
 
-    // Add the tile to the global tile list
     ds_list_add(global.tile_list, tile_data);
 }
 
-// Shuffle the complete tile wall
+// 🔀 Shuffle wall
 ds_list_shuffle(global.tile_list);
 
-// Create Opponent1 hand
+// 🂠 Create hands
 Opponent1 = ds_list_create();
-for (var i = 0; i < 13; i++) {
-    var drawn_tile1 = ds_list_find_value(global.tile_list, 0);
-    ds_list_add(Opponent1, drawn_tile1);
-    ds_list_delete(global.tile_list, 0);
-}
-
-// Create Opponent2 hand
 Opponent2 = ds_list_create();
-for (var i = 0; i < 13; i++) {
-    var drawn_tile2 = ds_list_find_value(global.tile_list, 0);
-    ds_list_add(Opponent2, drawn_tile2);
-    ds_list_delete(global.tile_list, 0);
-}
-
-// Create Opponent3 hand
 Opponent3 = ds_list_create();
+player_hand = ds_list_create();
+
 for (var i = 0; i < 13; i++) {
-    var drawn_tile3 = ds_list_find_value(global.tile_list, 0);
-    ds_list_add(Opponent3, drawn_tile3);
+    ds_list_add(Opponent1, ds_list_find_value(global.tile_list, 0));
+    ds_list_delete(global.tile_list, 0);
+
+    ds_list_add(Opponent2, ds_list_find_value(global.tile_list, 0));
+    ds_list_delete(global.tile_list, 0);
+
+    ds_list_add(Opponent3, ds_list_find_value(global.tile_list, 0));
+    ds_list_delete(global.tile_list, 0);
+
+    ds_list_add(player_hand, ds_list_find_value(global.tile_list, 0));
     ds_list_delete(global.tile_list, 0);
 }
 
-// Reserve tiles for the dead wall (not draw-able in normal turns)
+// 🧱 Dead wall (16 tiles)
 global.deadwall = ds_list_create();
-for (var c = 0; c < 16; c++) {
-    var dead_tile = ds_list_find_value(global.tile_list, 0);
-    ds_list_add(global.deadwall, dead_tile);
+for (var i = 0; i < 16; i++) {
+    ds_list_add(global.deadwall, ds_list_find_value(global.tile_list, 0));
     ds_list_delete(global.tile_list, 0);
 }
 
-// Draw dora indicators from the dead wall
+// 🉐 Dora indicators (5 tiles from dead wall)
 global.dora = ds_list_create();
 for (var d = 0; d < 5; d++) {
-    var dora = ds_list_find_value(global.deadwall, 0);
-    ds_list_add(global.dora, dora);
+    ds_list_add(global.dora, ds_list_find_value(global.deadwall, 0));
     ds_list_delete(global.deadwall, 0);
 }
 
